@@ -1,13 +1,13 @@
 import React from 'react';
-import Blog from './Blog';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const BlogList = ({
-    blogs,
-    handleLike,
-    handleRemove,
-    user
-}) => {
+const BlogList = (props) => {
+
+    if ( props.blogs.postdata.length === 0 ) {
+        return null;
+    }
 
     const sortDesc = (a,b) => {
         if ( a.likes < b.likes ) {
@@ -19,29 +19,36 @@ const BlogList = ({
         }
     };
 
-    const sortedBlogs = blogs.sort(sortDesc);
+    const sortedBlogs = props.blogs.postdata.sort(sortDesc);
 
     return (
         <div>
             <h2>Blog posts</h2>
             {sortedBlogs.map(post => {
-                return <Blog
-                    key={post.id}
-                    blog={post}
-                    handleLike={handleLike}
-                    handleRemove={handleRemove}
-                    user={user}
-                />;
+                return (
+                    <div key={post.id} className="list-post-entry">
+                        <Link to={`/blogs/${post.id}`} >
+                            <div className="post-title">
+                                {post.title} {post.author}
+                            </div>
+                        </Link>
+                    </div>
+                );
             })}
         </div>
     );
 };
 
 BlogList.propTypes = {
-    blogs: PropTypes.array.isRequired,
-    handleLike: PropTypes.func.isRequired,
-    handleRemove: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    blogs: PropTypes.object.isRequired,
 };
 
-export default BlogList;
+const mapStateToProps = (state) => {
+    return {
+        blogs: state.blogs,
+        userdata: state.user
+    };
+};
+
+const connectedBlogList = connect(mapStateToProps)(BlogList);
+export default connectedBlogList;

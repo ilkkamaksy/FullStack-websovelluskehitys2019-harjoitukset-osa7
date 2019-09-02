@@ -1,37 +1,60 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addBlog } from '../reducers/blogReducer';
+import { useField } from '../hooks/index';
 
-const CreateBlogForm = ({
-    handleCreateBlog,
-    blogTitle,
-    blogAuthor,
-    blogUrl,
-}) => {
+const CreateBlogForm = (props) => {
+
+    const title = useField('text');
+    const author = useField('text');
+    const url = useField('text');
+
+    const removeReset = ({ reset: _, ...clone }) => clone;
 
     return (
         <div>
             <h2>Create new post</h2>
-            <form onSubmit={handleCreateBlog}>
+            <form onSubmit={(e) => props.addBlog(
+                e,
+                {
+                    title: title.value,
+                    author: author.value,
+                    url: url.value
+                },
+                props.userdata.user
+            )}>
                 <div>
                     Title
-                    <input {...blogTitle} />
+                    <input { ...removeReset(title) } />
                 </div>
                 <div>
                     Author
-                    <input {...blogAuthor} />
+                    <input { ...removeReset(author) } />
                 </div>
                 <div>
                     Url
-                    <input {...blogUrl} />
+                    <input { ...removeReset(url) } />
                 </div>
-                <button type="submit">create</button>
+                <button className="primary" type="submit">create</button>
             </form>
         </div>
     );
 };
 
-CreateBlogForm.propTypes = {
-    handleCreateBlog: PropTypes.func.isRequired,
+const mapStateToProps = (state) => {
+    return {
+        newTitle: state.blogs.newTitle,
+        newAuthor: state.blogs.newAuthor,
+        newUrl: state.blogs.newUrl,
+        userdata: state.user
+    };
 };
 
-export default CreateBlogForm;
+const connectedCreateBlogForm = connect(
+    mapStateToProps,
+    {
+        addBlog
+    }
+)(CreateBlogForm);
+
+export default connectedCreateBlogForm;

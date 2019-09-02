@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
 const blogRouter = require('./controllers/blogposts');
+const commentRouter = require('./controllers/comments');
 const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const middleware = require('./utils/middleware');
@@ -29,6 +30,7 @@ app.use(middleware.tokenExtractor);
 
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', blogRouter);
+app.use('/api/comments', commentRouter);
 app.use('/api/users', usersRouter);
 
 app.use(middleware.unknownEndpoint);

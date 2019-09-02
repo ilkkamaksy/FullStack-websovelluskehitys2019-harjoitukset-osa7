@@ -1,34 +1,46 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setUsername, setPassword, loginUser, authenticationCheck } from '../reducers/userReducer';
 
-const LoginForm = ({
-    handleSubmit,
-    usernameInput,
-    passwordInput,
-}) => {
+const LoginForm = (props) => {
+
+    if ( props.userdata.user ) {
+        return null;
+    }
 
     return (
         <div>
             <h1>Log in to application</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => props.loginUser(e, { username: props.userdata.username, password: props.userdata.password })}>
                 <div>
                     username
-                    <input { ...usernameInput}
-                    />
+                    <input value={props.userdata.username} onChange={(e) => props.setUsername(e)} />
                 </div>
                 <div>
                     password
-                    <input {...passwordInput}
+                    <input value={props.userdata.password} onChange={(e) => props.setPassword(e)}
                     />
                 </div>
-                <button type="submit">login</button>
+                <button className="primary" type="submit">login</button>
             </form>
         </div>
     );
 };
 
-LoginForm.propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
+const mapStateToProps = (state) => {
+    return {
+        userdata: state.user
+    };
 };
 
-export default LoginForm;
+const connectedLoginForm = connect(
+    mapStateToProps,
+    {
+        setUsername,
+        setPassword,
+        loginUser,
+        authenticationCheck
+    }
+)(LoginForm);
+
+export default connectedLoginForm;

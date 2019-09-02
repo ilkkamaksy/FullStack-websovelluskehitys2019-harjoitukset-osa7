@@ -1,16 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-const Notification = ({ notice }) => {
+const Notification = (props) => {
+
+    if ( !props.notice.content ) {
+        return null;
+    }
+
     return (
-        <div className={`notice notice-${notice.type}`}>
-            {notice.message}
+        <div className={`notice notice-${props.notice.type}`}>
+            {props.notice.content}
         </div>
     );
 };
 
-Notification.propTypes = {
-    notice: PropTypes.object.isRequired
+const mapStateToProps = (state) => {
+    return {
+        notice: state.notice
+    };
 };
 
-export default Notification;
+
+const connectedNotice = connect(mapStateToProps)(Notification);
+export default connectedNotice;

@@ -1,164 +1,131 @@
-import React, { useState, useEffect } from 'react';
-// import blogService from './services/blogs';
-import loginService from './services/login';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { initBlogs } from './reducers/blogReducer';
+import { setBlogNotification, setUserNotification } from './reducers/noticeReducer';
+import { authenticationCheck } from './reducers/userReducer';
+import { getUserStats } from './reducers/userStatsReducer';
+
+import Navmenu from './components/Navmenu';
 import BlogList from './components/BlogList';
+import Blog from './components/Blog';
+import UserStats from './components/UserStats';
+import SingleUserStats from './components/SingleUserStats';
 import Notification from './components/Notification';
 import CreateBlogForm from './components/CreateBlogForm';
 import LoginForm from './components/LoginForm';
 import Togglable from './components/Togglable';
 
-import { useField, useResource } from './hooks/index';
-
 import './App.css';
 
-const App = () => {
-    const [blogs, blogService] = useResource('http://localhost:3003/api/blogs');
-    const [notice, setNoticeMessage] = useState(null);
-    const [user, setUser] = useState(null);
-
-    const usernameInput = useField('text');
-    const passwordInput = useField('password');
-
-    const blogTitle = useField('text');
-    const blogAuthor = useField('text');
-    const blogUrl = useField('text');
+const App = (props) => {
 
     useEffect(() => {
-        blogService.getAll();
+        props.authenticationCheck();
     }, []);
 
     useEffect(() => {
-        const loggedInUserJSON = window.localStorage.getItem('loggedBlogAppUser');
-        if ( loggedInUserJSON ) {
-            const user = JSON.parse(loggedInUserJSON);
-            blogService.setToken(user.token);
-            setUser(user);
+
+        const {
+            user,
+            fetching,
+            loginFail,
+            loginout
+        } = props.userdata;
+
+        if ( fetching || loginout ) {
+            props.setUserNotification( user, loginFail, loginout );
         }
-    }, []);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const username = usernameInput.value;
-            const password = passwordInput.value;
-            const user = await loginService.login({ username, password });
-            window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
-
-            blogService.setToken(user.token);
-            setUser(user);
-            setNotice({ message: `Logged in as ${user.name}`, type: 'success' });
-            usernameInput.reset();
-            passwordInput.reset();
-        } catch (exception) {
-            usernameInput.reset();
-            passwordInput.reset();
-            setNotice({ message: 'Wrong username or password', type: 'error' });
+        if ( props.userdata.user !== null && props.userdata.fetching ) {
+            props.initBlogs();
+            props.getUserStats();
         }
-    };
 
-    const handleLogout = () => {
-        window.localStorage.removeItem('loggedBlogAppUser');
-        setUser(null);
-        setNotice({ message: 'Logged out successfully', type: 'success' });
-    };
+        const {
+            processing,
+            blogProcessed,
+            error
+        } = props.blogs;
 
-    const handleCreateBlog = async (e) => {
-        e.preventDefault();
-        blogFormRef.current.toggleVisibility();
-        const newBlogPost = {
-            title: blogTitle.value,
-            author: blogAuthor.value,
-            url: blogUrl.value
-        };
-
-        try {
-            blogService.create(newBlogPost);
-            setNotice({ message: `a new blog post ${newBlogPost.title} by ${newBlogPost.author}`, type: 'success' });
-            blogTitle.reset();
-            blogAuthor.reset();
-            blogUrl.reset();
-        } catch ( exception ) {
-            setNotice({ message: 'error: could not publish post', type: 'error' });
+        if ( (processing && blogProcessed) || (error && processing) ) {
+            props.setBlogNotification(processing, blogProcessed, error);
         }
-    };
 
-    const handleLike = async blog => {
-        try {
-            const postToUpdate = {
-                ...blog,
-                likes: blog.likes + 1,
-            };
-            blogService.update(blog.id, postToUpdate);
-        } catch (exception) {
-            setNotice({ message: 'error: could not update post', type: 'error' });
-        }
-    };
+    });
 
-    const handleRemove = async blog => {
-        if ( window.confirm(`remove blog ${blog.title} by ${blog.author}?`) ) {
-            try {
-                blogService.remove(blog.id);
-                setNotice({ message: `${blog.title} ${blog.author} removed`, type: 'success' });
-            } catch (exception) {
-                setNotice({ message: 'error: could not delete post', type: 'error' });
-            }
-        }
-    };
+    const userById = (id) =>
+        props.userStatsData.userStats.find(a => a.id === id);
 
-    const setNotice = ( notice ) => {
-        setNoticeMessage(notice);
-        setTimeout(() => {
-            setNoticeMessage(null);
-        }, 5000);
-    };
+    const blogById = (id) =>
+        props.blogs.postdata.find(a => a.id === id);
 
     const blogFormRef = React.createRef();
-
-    const removeReset = ({ reset: _, ...clone }) => clone;
 
     return (
         <div className="App">
 
-            { notice && <Notification notice={notice} /> }
+            <Router>
 
-            {user === null
-                ?
-                <Togglable buttonLabel="login">
-                    <LoginForm
-                        usernameInput={removeReset(usernameInput)}
-                        passwordInput={removeReset(passwordInput)}
-                        handleSubmit={handleLogin}
-                    />
-                </Togglable>
-                :
-                <div>
+                <Navmenu />
+                <Notification />
 
-                    <h1>Blogs</h1>
-                    <p>
-                        {user.name} logged in
-                        <button onClick={handleLogout}>Logout</button>
-                    </p>
-
-                    <Togglable buttonLabel="Create a new blog post" ref={blogFormRef}>
-                        <CreateBlogForm
-                            blogTitle={removeReset(blogTitle)}
-                            blogAuthor={removeReset(blogAuthor)}
-                            blogUrl={removeReset(blogUrl)}
-                            handleCreateBlog={handleCreateBlog}
-                        />
+                { props.userdata.user === null
+                    ?
+                    <Togglable buttonLabel="login">
+                        <LoginForm />
                     </Togglable>
+                    :
+                    <div>
 
-                    <BlogList
-                        blogs={blogs}
-                        handleLike={handleLike}
-                        handleRemove={handleRemove}
-                        user={user}
-                    />
+                        <h1>Blogs</h1>
 
-                </div>
-            }
+                        <Togglable buttonLabel="Create a new blog post" ref={blogFormRef}>
+                            <CreateBlogForm />
+                        </Togglable>
+
+                        <Route exact path="/users" render={ () =>
+                            <UserStats />
+                        }
+                        />
+
+                        <Route exact path="/users/:id" render={({ match }) =>
+                            <SingleUserStats user={ userById(match.params.id) } />
+                        }
+                        />
+                        <Route exact path="/" render={() =>
+                            <BlogList />
+                        }
+                        />
+
+                        <Route exact path="/blogs/:id" render={({ match }) =>
+                            <Blog blog={ blogById(match.params.id) } />
+                        }
+                        />
+
+                    </div>
+                }
+            </Router>
         </div>
     );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        notice: state.notice,
+        blogs: state.blogs,
+        userdata: state.user,
+        userStatsData: state.userStats
+    };
+};
+
+const connectedApp = connect(
+    mapStateToProps,
+    {
+        initBlogs,
+        setBlogNotification,
+        setUserNotification,
+        getUserStats,
+        authenticationCheck
+    })(App);
+export default connectedApp;

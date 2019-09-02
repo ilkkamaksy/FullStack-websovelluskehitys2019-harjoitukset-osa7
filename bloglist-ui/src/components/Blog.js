@@ -1,40 +1,44 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { voteBlog, removeBlog } from '../reducers/blogReducer';
+import Comments from './Comments';
 
-const Blog = ({
-    blog,
-    handleLike,
-    handleRemove,
-    user
-}) => {
+const Blog = (props) => {
 
-    const [visible, setVisible] = useState(false);
-    const showWhenVisible = { display: visible ? '' : 'none' };
-
-    const setVisibility = () => {
-        setVisible(!visible);
-    };
+    if ( !props.blog ) {
+        return null;
+    }
 
     return  (
-        <div className="post-entry">
-            <div className="post-title" onClick={setVisibility}>
-                {blog.title} {blog.author}
+        <div className="single-post-entry">
+            <div className="post-title">
+                {props.blog.title} {props.blog.author}
             </div>
-            <div className="post-meta" style={showWhenVisible}>
-                <div><a href={blog.url}>{blog.url}</a></div>
-                <div>{blog.likes} <button onClick={() => handleLike(blog)}>like</button></div>
-                <div>Added by: {blog.user.name}</div>
-                { user.username === blog.user.username && <div><button onClick={() => handleRemove(blog)}>remove</button></div> }
+            <div className="post-meta">
+                <div><a href={props.blog.url}>{props.blog.url}</a></div>
+                <div>{props.blog.likes} <button className="secondary" onClick={() => props.voteBlog(props.blog)}>like</button></div>
+                <div>Added by: {props.blog.user.name}</div>
+                { props.userdata.user.username === props.blog.user.username &&
+                    <div><button className="tertiary" onClick={() => props.removeBlog(props.blog)}>remove</button></div>
+                }
             </div>
+            <Comments blog={props.blog} />
         </div>
     );
 };
 
-Blog.propTypes = {
-    blog: PropTypes.object.isRequired,
-    handleLike: PropTypes.func.isRequired,
-    handleRemove: PropTypes.func,
-    user: PropTypes.object.isRequired
+const mapStateToProps = (state) => {
+    return {
+        userdata: state.user
+    };
 };
 
-export default Blog;
+const connectedBlog = connect(
+    mapStateToProps,
+    {
+        removeBlog,
+        voteBlog
+    }
+)(Blog);
+
+export default connectedBlog;
