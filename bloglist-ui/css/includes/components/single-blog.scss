@@ -1,0 +1,23 @@
+/* Single post */
+.single-post-entry {
+    opacity: 1;
+    border: 1px solid #ddd;
+    margin-bottom: .5em;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    animation: fadeIn 0.5s 0.2s forwards;
+    visibility: hidden;
+    margin-top:2em;
+}
+
+.post-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.post-meta {
+    > div {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+} 

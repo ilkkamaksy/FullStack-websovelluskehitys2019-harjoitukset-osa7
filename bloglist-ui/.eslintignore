@@ -1,5 +1,6 @@
 node_modules
 build
 __mocks__
+cypress
 
 webpack.config.styles.js

@@ -1,0 +1,25 @@
+button {
+    padding: 7px 15px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    :hover {
+        opacity: .9;
+    }
+    &.primary {
+        background: $primary-color;
+        border: 1px solid $primary-color;
+        color: #fff;
+    }
+    &.secondary {
+        background: #fff;
+        border: 1px solid $primary-color;
+        color: #6495ed;
+    }
+    &.tertiary {
+        background: $secondary-color;
+        border: 1px solid $secondary-color;
+        color: #fff;
+    }
+}

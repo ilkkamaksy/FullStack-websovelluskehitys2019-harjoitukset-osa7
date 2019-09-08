@@ -24,6 +24,8 @@ const App = (props) => {
         props.authenticationCheck();
     }, []);
 
+    const blogFormRef = React.createRef();
+
     useEffect(() => {
 
         const {
@@ -52,6 +54,12 @@ const App = (props) => {
             props.setBlogNotification(processing, blogProcessed, error);
         }
 
+        if ( processing && blogProcessed && !error ) {
+            if ( blogFormRef.current ) {
+                blogFormRef.current.hide();
+            }
+        }
+
     });
 
     const userById = (id) =>
@@ -59,8 +67,6 @@ const App = (props) => {
 
     const blogById = (id) =>
         props.blogs.postdata.find(a => a.id === id);
-
-    const blogFormRef = React.createRef();
 
     return (
         <div className="App">
@@ -70,6 +76,7 @@ const App = (props) => {
                 <Navmenu />
                 <Notification />
 
+                <h1>Simple blog app</h1>
                 { props.userdata.user === null
                     ?
                     <Togglable buttonLabel="login">
@@ -78,11 +85,12 @@ const App = (props) => {
                     :
                     <div>
 
-                        <h1>Blogs</h1>
-
-                        <Togglable buttonLabel="Create a new blog post" ref={blogFormRef}>
-                            <CreateBlogForm />
-                        </Togglable>
+                        <Route exact path="/" render={ () =>
+                            <Togglable buttonLabel="Create a new blog post" ref={blogFormRef}>
+                                <CreateBlogForm />
+                            </Togglable>
+                        }
+                        />
 
                         <Route exact path="/users" render={ () =>
                             <UserStats />

@@ -22,7 +22,8 @@ export const voteBlog = (blog) => {
         const result = await blogService.update(blog.id, postToUpdate);
         const updatedBlog = {
             ...result,
-            user: postToUpdate.user
+            user: postToUpdate.user,
+            comments: postToUpdate.comments
         };
         dispatch({
             type: 'VOTE_BLOG',

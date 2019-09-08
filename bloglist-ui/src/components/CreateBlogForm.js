@@ -12,8 +12,8 @@ const CreateBlogForm = (props) => {
     const removeReset = ({ reset: _, ...clone }) => clone;
 
     return (
-        <div>
-            <h2>Create new post</h2>
+        <div className="form form__create-blog">
+            <h3>Create new post</h3>
             <form onSubmit={(e) => props.addBlog(
                 e,
                 {
@@ -24,18 +24,18 @@ const CreateBlogForm = (props) => {
                 props.userdata.user
             )}>
                 <div>
-                    Title
-                    <input { ...removeReset(title) } />
+                    <label>Title</label>
+                    <input data-cy="blog-title" id="blog_title" { ...removeReset(title) } />
                 </div>
                 <div>
-                    Author
-                    <input { ...removeReset(author) } />
+                    <label>Author</label>
+                    <input data-cy="blog-author" id="blog_author" { ...removeReset(author) } />
                 </div>
                 <div>
-                    Url
-                    <input { ...removeReset(url) } />
+                    <label>Url</label>
+                    <input data-cy="blog-url" id="blog_url" { ...removeReset(url) } />
                 </div>
-                <button className="primary" type="submit">create</button>
+                <button className="primary submit" data-cy="create-blog" type="submit">Create</button>
             </form>
         </div>
     );

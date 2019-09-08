@@ -1,0 +1,24 @@
+/* User stats */
+.user-stats__wrapper {
+    max-width: 500px;
+    width: 100%;
+    a {
+        text-decoration: none;
+        color: $primary-color;
+    }
+}
+
+.user-stats__row {
+    display: flex;
+    text-align: left;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    &.user-stats__row--header {
+        font-weight: bold;
+    }
+}
+
+.user-stats__col {
+    flex: 1 1 auto;
+    max-width: 50%;
+}

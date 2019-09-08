@@ -24,9 +24,9 @@ const BlogList = (props) => {
     return (
         <div>
             <h2>Blog posts</h2>
-            {sortedBlogs.map(post => {
+            {sortedBlogs.map((post, index) => {
                 return (
-                    <div key={post.id} className="list-post-entry">
+                    <div data-cy="blog-link" key={post.id} className="list-post-entry">
                         <Link to={`/blogs/${post.id}`} >
                             <div className="post-title">
                                 {post.title} {post.author}

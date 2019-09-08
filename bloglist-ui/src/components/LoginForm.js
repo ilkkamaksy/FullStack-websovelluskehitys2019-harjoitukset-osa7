@@ -9,19 +9,29 @@ const LoginForm = (props) => {
     }
 
     return (
-        <div>
-            <h1>Log in to application</h1>
+        <div className="form form__login">
+            <h3>Log in</h3>
             <form onSubmit={(e) => props.loginUser(e, { username: props.userdata.username, password: props.userdata.password })}>
                 <div>
-                    username
-                    <input value={props.userdata.username} onChange={(e) => props.setUsername(e)} />
-                </div>
-                <div>
-                    password
-                    <input value={props.userdata.password} onChange={(e) => props.setPassword(e)}
+                    <label>Username</label>
+                    <input
+                        id="username"
+                        data-cy="username"
+                        value={props.userdata.username}
+                        onChange={(e) => props.setUsername(e)}
                     />
                 </div>
-                <button className="primary" type="submit">login</button>
+                <div>
+                    <label>Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        data-cy="pw"
+                        value={props.userdata.password}
+                        onChange={(e) => props.setPassword(e)}
+                    />
+                </div>
+                <button className="primary login submit" data-cy="login" type="submit">Login</button>
             </form>
         </div>
     );

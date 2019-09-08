@@ -16,10 +16,10 @@ const Blog = (props) => {
             </div>
             <div className="post-meta">
                 <div><a href={props.blog.url}>{props.blog.url}</a></div>
-                <div>{props.blog.likes} <button className="secondary" onClick={() => props.voteBlog(props.blog)}>like</button></div>
+                <div>{props.blog.likes} <button data-cy="blog-like" className="secondary" onClick={() => props.voteBlog(props.blog)}>like</button></div>
                 <div>Added by: {props.blog.user.name}</div>
                 { props.userdata.user.username === props.blog.user.username &&
-                    <div><button className="tertiary" onClick={() => props.removeBlog(props.blog)}>remove</button></div>
+                    <div><button data-cy="remove-blog" className="tertiary" onClick={() => props.removeBlog(props.blog)}>remove</button></div>
                 }
             </div>
             <Comments blog={props.blog} />

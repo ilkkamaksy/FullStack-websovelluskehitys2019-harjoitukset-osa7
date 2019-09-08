@@ -1,0 +1,21 @@
+.notice {
+    color: #fff;
+    padding: 1em;
+    border-radius: 4px;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
+    top: 1em;
+    max-width: inherit;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    animation: fadeIn 0.5s 0.2s forwards;
+    visibility: hidden;
+    &.notice-error {
+        background: $error-color;
+        border-color: $error-color;
+    }
+    &.notice-success {
+        background: $success-color;
+        border-color: $success-color;
+    }
+}

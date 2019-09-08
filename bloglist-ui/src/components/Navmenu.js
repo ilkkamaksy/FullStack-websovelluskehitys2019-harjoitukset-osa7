@@ -13,8 +13,8 @@ const Navmenu = (props) => {
         <div className="navbar">
             <div className="nav__container">
                 <div className="nav__section nav__section--start">
-                    <Link to="/">Blogs</Link>
-                    <Link to="/users">Users</Link>
+                    <Link to="/"><span data-cy="nav-item-blogs" className="menu-item__text">Blogs</span></Link>
+                    <Link to="/users"><span data-cy="nav-item-users" className="menu-item__text">Users</span></Link>
                 </div>
                 <div className="nav__section nav__section--end">
                     <span>{ props.userdata.user.name} logged in</span>

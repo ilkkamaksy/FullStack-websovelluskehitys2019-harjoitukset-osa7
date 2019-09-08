@@ -1,0 +1,31 @@
+.form {
+    max-width: 500px;
+    background: #fafafa;
+    border-radius: 4px;
+    padding: 1em;
+    margin-bottom: 1em;
+    h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    form {
+        > div {
+            margin: .5em 0;
+            font-size: .9em;
+            color: #444;
+        }
+        label {
+            display: block;
+        }
+        input {
+            width: 100%;
+            line-height: 1.6em;
+            padding: 4px;
+        }
+        button.submit {
+            padding: 10px 25px;
+            font-size: 13px;
+            margin-top: .5em;
+        }
+    } 
+} 

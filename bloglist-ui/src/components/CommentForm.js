@@ -19,10 +19,10 @@ const CommentForm = (props) => {
                 props.blog
             )}>
                 <div>
-                    Comment
-                    <div><input { ...removeReset(comment) } /></div>
+                    <label>Comment</label>
+                    <div><input data-cy="comment" { ...removeReset(comment) } /></div>
                 </div>
-                <button className="primary" type="submit">Add comment</button>
+                <button className="primary" data-cy="add-comment" type="submit">Add comment</button>
             </form>
         </div>
     );
