@@ -10,11 +10,11 @@ const Togglable = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(false);
-    }
+    };
     const toggleVisibility = () => {
         setVisible(!visible);
     };
-    
+
     useImperativeHandle(ref, () => {
         return {
             toggleVisibility,
